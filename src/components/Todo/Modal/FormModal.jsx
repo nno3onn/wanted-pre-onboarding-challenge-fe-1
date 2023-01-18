@@ -8,29 +8,49 @@ import useCreateTodo from "../../../hooks/query/useCreateTodo";
 import useGetTodoList from "../../../hooks/query/useGetTodoList";
 import showToastMessage from "../../../utils/showToastMessage";
 import { TOAST_MESSAGE } from "../../../config/toastMessage";
-import { useParams } from "react-router-dom";
+import useGetTodoById from "../../../hooks/query/useGetTodoById";
+import useUpdateTodo from "../../../hooks/query/useUpdateTodo";
+import { useEffect } from "react";
 
 const FormModal = () => {
   const queryClient = useQueryClient();
-  const { id } = useParams();
-  const [title, changeTitle, resetTitle] = useInput();
-  const [content, changeContent, resetContent] = useInput();
 
   const { authToken } = useAuthStore(({ authToken }) => ({ authToken }), shallow);
-  const { open, closeModal } = useModalStore();
-
+  const { todoId, closeModal } = useModalStore(({ todoId, closeModal }) => ({ todoId, closeModal }), shallow);
+  console.log(todoId);
+  const { data, isLoading } = useGetTodoById(todoId, authToken);
+  const { mutate: updateTodo } = useUpdateTodo({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(useGetTodoById.getKey(authToken));
+      showToastMessage(TOAST_MESSAGE.TODO.UPDATE_SUCCESS, "success");
+    },
+  });
   const { mutate: createTodo } = useCreateTodo({
     onSuccess: async () => {
       await queryClient.invalidateQueries(useGetTodoList.getKey(authToken));
+      showToastMessage(TOAST_MESSAGE.TODO.CREATE_SUCCESS, "success");
     },
   });
+
+  const [title, setTitle, changeTitle] = useInput();
+  const [content, setContent, changeContent] = useInput();
+
+  useEffect(() => {
+    if (data) {
+      setTitle(data.data.title);
+      setContent(data.data.content);
+    }
+  }, [data]);
 
   const onCreateTodo = () => {
     if (!title || !content) {
       return showToastMessage(TOAST_MESSAGE.TODO.NOT_ALLOW_EMPTY_STRING, "error");
     }
-    createTodo({ title, content, authToken });
-    showToastMessage(TOAST_MESSAGE.TODO.CREATE_SUCCESS, "success");
+    if (todoId) {
+      updateTodo({ todoId, title, content, authToken });
+    } else {
+      createTodo({ title, content, authToken });
+    }
     closeModal();
   };
 

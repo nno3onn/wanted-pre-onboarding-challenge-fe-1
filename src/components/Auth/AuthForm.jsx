@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const navigate = useNavigate();
-  const [email, changeEmail, resetEmail] = useInput();
-  const [password, changePassword, resetPassword] = useInput();
+  const [email, setEmail, changeEmail] = useInput();
+  const [password, setPassword, changePassword] = useInput();
   const { authFormType, setToken, setAuthFormType } = useAuthStore(
     ({ authFormType, setToken, setAuthFormType }) => ({ authFormType, setToken, setAuthFormType }),
     shallow
@@ -55,8 +55,8 @@ const AuthForm = () => {
   };
 
   const resetInputs = () => {
-    resetEmail();
-    resetPassword();
+    setEmail("");
+    setPassword("");
   };
 
   const onToggleType = () => {

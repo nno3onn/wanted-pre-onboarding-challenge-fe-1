@@ -3,10 +3,14 @@ import { shallow } from "zustand/shallow";
 import { useModalStore } from "../../store/useModalStore";
 
 const FloatingButton = () => {
-  const { openModal, setModalType } = useModalStore(({ openModal, setModalType }) => ({ openModal, setModalType }), shallow);
+  const { setTodoId, openModal, setModalType } = useModalStore(
+    ({ setTodoId, openModal, setModalType }) => ({ setTodoId, openModal, setModalType }),
+    shallow
+  );
 
   const onClick = () => {
     setModalType("form");
+    setTodoId("");
     openModal();
   };
 
