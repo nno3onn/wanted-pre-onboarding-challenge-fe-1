@@ -48,6 +48,7 @@ const NavigationContainer = styled.div`
   padding: 0 1rem;
   position: sticky;
   top: 0;
+  background-color: white;
 `;
 
 const Title = styled.h1`

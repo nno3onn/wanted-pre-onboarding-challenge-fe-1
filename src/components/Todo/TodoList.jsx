@@ -41,29 +41,37 @@ const TodoList = () => {
   };
 
   return (
-    <>
+    <TodoListContainer>
       {todoList?.data.map((todo) => (
-        <TodoListContainer key={todo.id} onClick={() => onShowDetail(todo.id)}>
+        <TodoContainer key={todo.id} onClick={() => onShowDetail(todo.id)}>
           <TodoHeader>
-            <p>{todo.title}</p>
+            <TodoHeaderCenter>
+              <Title>{todo.title}</Title>
+              <UpdatedAt updatedAt={todo.updatedAt} />
+            </TodoHeaderCenter>
             <Buttons>
               <Button onClick={onUpdate}>수정</Button>
               <Button onClick={onDelete}>삭제</Button>
             </Buttons>
           </TodoHeader>
-          <UpdatedAt updatedAt={todo.updatedAt} />
           <Outlet context={{ id: todo.id, title: todo.title, content: todo.content }} />
-        </TodoListContainer>
+        </TodoContainer>
       ))}
-    </>
+    </TodoListContainer>
   );
 };
-
-const TodoListContainer = styled.button`
-  width: 100%;
-  background-color: #efefef;
+const TodoListContainer = styled.div`
   ${flexCenter}
   flex-direction: column;
+`;
+
+const TodoContainer = styled.button`
+  width: 80vw;
+  background-color: #f1f1f1;
+
+  flex-direction: column;
+  padding: 12px;
+  margin-bottom: 12px;
 `;
 
 const TodoHeader = styled.div`
@@ -71,9 +79,16 @@ const TodoHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  p {
-    flex: 1;
-  }
+`;
+
+const TodoHeaderCenter = styled.div`
+  flex: 1;
+  text-align: center;
+`;
+const Title = styled.p`
+  font-size: 16px;
+  margin-top: 12px;
+  font-weight: bold;
 `;
 
 const Buttons = styled.div`

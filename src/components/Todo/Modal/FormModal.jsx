@@ -1,23 +1,23 @@
-import { shallow } from "zustand/shallow";
-import { useAuthStore, useModalStore } from "../../../store";
-import useInput from "../../../hooks/common/useInput";
+import { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import styled from "styled-components";
+import { shallow } from "zustand/shallow";
 import DefaultModal from "./DefaultModal";
+import useInput from "../../../hooks/common/useInput";
 import useCreateTodo from "../../../hooks/query/useCreateTodo";
 import useGetTodoList from "../../../hooks/query/useGetTodoList";
-import showToastMessage from "../../../utils/showToastMessage";
-import { TOAST_MESSAGE } from "../../../config/toastMessage";
 import useGetTodoById from "../../../hooks/query/useGetTodoById";
 import useUpdateTodo from "../../../hooks/query/useUpdateTodo";
-import { useEffect } from "react";
+import showToastMessage from "../../../utils/showToastMessage";
+import { TOAST_MESSAGE } from "../../../config/toastMessage";
+import { useAuthStore, useModalStore } from "../../../store";
 
 const FormModal = () => {
   const queryClient = useQueryClient();
 
   const { authToken } = useAuthStore(({ authToken }) => ({ authToken }), shallow);
   const { todoId, closeModal } = useModalStore(({ todoId, closeModal }) => ({ todoId, closeModal }), shallow);
-  console.log(todoId);
+
   const { data, isLoading } = useGetTodoById(todoId, authToken);
   const { mutate: updateTodo } = useUpdateTodo({
     onSuccess: async () => {
@@ -55,19 +55,39 @@ const FormModal = () => {
   };
 
   return (
-    <DefaultModal width={500} height={500}>
-      <button onClick={closeModal}>X</button>
-      <input type="text" value={title} onChange={changeTitle} placeholder="제목을 입력해주세요." />
-      <TextArea rows={10} value={content} onChange={changeContent} placeholder="할일을 입력해주세요." />
+    <DefaultModal width={500} height={400}>
+      <ModalHeader>
+        <button onClick={closeModal}>X</button>
+      </ModalHeader>
+      <ModalBody>
+        <Input type="text" value={title} onChange={changeTitle} placeholder="제목을 입력해주세요." />
+        <TextArea rows={12} value={content} onChange={changeContent} placeholder="할일을 입력해주세요." />
+      </ModalBody>
       <CreateButton onClick={onCreateTodo}>작성하기</CreateButton>
     </DefaultModal>
   );
 };
 
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+const Input = styled.input`
+  margin-top: 16px;
+  margin-bottom: 16px;
+`;
 const TextArea = styled.textarea`
   resize: none;
 `;
 
-const CreateButton = styled.button``;
+const CreateButton = styled.button`
+  margin-bottom: 16px;
+`;
 
 export default FormModal;

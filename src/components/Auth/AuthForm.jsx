@@ -87,7 +87,7 @@ const AuthButton = styled.button`
   padding: 8px 12px;
 `;
 
-const Text = styled.p`
+const Text = styled.button`
   margin-top: 12px;
   color: skyblue;
 `;
