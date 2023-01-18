@@ -17,11 +17,7 @@ const AuthForm = () => {
   const [email, changeEmail, resetEmail] = useInput();
   const [password, changePassword, resetPassword] = useInput();
   const { authFormType, setToken, setAuthFormType } = useAuthStore(
-    (state) => ({
-      authFormType: state.authFormType,
-      setToken: state.setToken,
-      setAuthFormType: state.setAuthFormType,
-    }),
+    ({ authFormType, setToken, setAuthFormType }) => ({ authFormType, setToken, setAuthFormType }),
     shallow
   );
   const { mutate: login } = useLogin({

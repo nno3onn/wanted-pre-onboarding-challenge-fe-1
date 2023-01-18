@@ -1,14 +1,21 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 export const useModalStore = create(
-  devtools((set) => ({
-    open: false,
-    type: "",
+  devtools(
+    persist(
+      (set) => ({
+        open: false,
+        type: "",
+        todoId: "",
 
-    setModalType: (type) => set({ type }),
+        setModalType: (type) => set({ type }),
+        setTodoId: (todoId) => set({ todoId }),
 
-    openModal: () => set({ open: true }),
-    closeModal: () => set({ open: false }),
-  }))
+        openModal: () => set({ open: true }),
+        closeModal: () => set({ open: false }),
+      }),
+      { name: "modal" }
+    )
+  )
 );
